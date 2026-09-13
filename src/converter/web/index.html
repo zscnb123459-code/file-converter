@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>万能转换 · 简单、快速、安全的文件格式转换</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <span class="logo">⚡</span>
+      <span class="brand-name">万能转换</span>
+    </a>
+    <div class="nav-links">
+      <a href="#top">首页</a>
+      <a href="#tool">转换工具</a>
+      <a href="#about">关于</a>
+    </div>
+    <span class="nav-status"><i class="dot"></i>本机服务运行中</span>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <h1>简单、快速、安全的<br class="m-only">文件格式转换</h1>
+  <p>支持视频、音频、PDF、Word、Excel、图片等格式互转<br class="m-only">全程在本机处理，文件不会外传</p>
+</header>
+
+<main class="wrap" id="tool">
+
+  <section class="card" id="appCard">
+
+    <!-- ① 上传区 -->
+    <div id="stUpload">
+      <div id="dropZone" class="dropzone" tabindex="0" role="button" aria-label="选择或拖入文件">
+        <svg class="dz-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 34V14m0 0l-8 8m8-8l8 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 38h28" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".35"/>
+        </svg>
+        <div class="dz-title">将文件拖到这里</div>
+        <div class="dz-sub">或 <span class="link">点击选择文件</span></div>
+        <div class="fmt-chips">
+          <span>MP4</span><span>MP3</span><span>M3U8</span><span>PDF</span><span>Word</span>
+          <span>Excel</span><span>CSV</span><span>PNG</span><span>JPG</span><span>WEBP</span>
+          <span>NCM</span><span>KGM</span>
+        </div>
+        <input type="file" id="fileInput" hidden>
+      </div>
+      <div id="ffmpegWarn" class="banner warn" hidden>
+        ⚠ 未检测到 FFmpeg：PDF / Word / Excel / 文本转换可用，音视频与图片格式转换不可用。
+      </div>
+    </div>
+
+    <!-- ② 选择目标格式 -->
+    <div id="stPick" hidden>
+      <div class="file-row">
+        <div class="file-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z" stroke="currentColor" stroke-width="1.6"/><path d="M14 3v5h5" stroke="currentColor" stroke-width="1.6"/></svg>
+        </div>
+        <div class="file-meta">
+          <div class="fname" id="pickName">文件名</div>
+          <div class="fsize" id="pickSize">—</div>
+        </div>
+        <button class="ghost small" id="btnChangeFile" type="button">换一个</button>
+      </div>
+
+      <div class="pick-label">转换为</div>
+      <div class="convert-row">
+        <span class="src-badge" id="srcExt">MP4</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="pills" id="targetPills"></div>
+      </div>
+
+      <button class="btn primary block" id="btnConvert" type="button">开始转换</button>
+    </div>
+
+    <!-- ③ 转换进行中 -->
+    <div id="stWorking" hidden>
+      <div class="center">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="work-title" id="workTitle">正在转换…</div>
+        <div class="work-sub" id="workSub">请稍候，完成后可立即下载</div>
+      </div>
+      <div class="progress"><div class="bar" id="progressBar"></div></div>
+      <div class="pct" id="pctText">0%</div>
+    </div>
+
+    <!-- ④ 转换成功 -->
+    <div id="stDone" hidden>
+      <div class="center">
+        <svg class="state-ico ok" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#22c55e" opacity=".12"/>
+          <circle cx="32" cy="32" r="21" fill="#22c55e"/>
+          <path d="M23 32.5l6.2 6L43 26" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="done-title">转换完成</div>
+      </div>
+      <div class="result-card">
+        <div class="r-row"><span class="r-key">原文件</span><span class="r-val fname" id="doneSrc">—</span></div>
+        <div class="r-row"><span class="r-key">转换结果</span><span class="r-val fname strong" id="doneOut">—</span></div>
+        <div class="r-row"><span class="r-key">文件大小</span><span class="r-val" id="doneSize">—</span></div>
+      </div>
+      <a class="btn primary block big" id="btnDownload" download>⬇ 下载文件</a>
+      <button class="btn ghost block" id="btnAnother" type="button">转换另一个文件</button>
+    </div>
+
+    <!-- ⑤ 转换失败 -->
+    <div id="stFail" hidden>
+      <div class="center">
+        <svg class="state-ico bad" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#ef4444" opacity=".12"/>
+          <circle cx="32" cy="32" r="21" fill="#ef4444"/>
+          <path d="M25 25l14 14M39 25L25 39" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="done-title">转换失败</div>
+        <div class="work-sub" id="failReason">请检查文件格式或重新尝试。</div>
+      </div>
+      <button class="btn primary block" id="btnRetry" type="button">重新上传</button>
+    </div>
+
+  </section>
+
+  <section class="features">
+    <div class="feat"><div class="feat-ico">🔒</div><div><b>本地处理</b><span>文件不离开你的电脑</span></div></div>
+    <div class="feat"><div class="feat-ico">🎬</div><div><b>格式齐全</b><span>视频音频文档图片一站互转</span></div></div>
+    <div class="feat"><div class="feat-ico">⚡</div><div><b>极速引擎</b><span>FFmpeg + PDFBox 硬核驱动</span></div></div>
+  </section>
+
+  <section class="about card" id="about">
+    <h2>关于</h2>
+    <p>「万能转换」是一个运行在你电脑上的本地文件转换服务，由 Java + FFmpeg 驱动，
+       支持视频 / 音频互转（含 m3u8）、图片 ⇄ PDF、PDF ⇄ Word、Excel ⇄ CSV 等常用转换。
+       页面上的转换都在浏览器所在电脑完成，上传的文件 24 小时后自动清理。</p>
+    <p class="tip">手机访问：确保手机与电脑连同一 Wi-Fi，用浏览器打开服务启动时显示的局域网地址即可。</p>
+  </section>
+
+</main>
+
+<footer class="footer">万能转换 · 本地文件转换服务</footer>
+
+<div id="toast" hidden></div>
+<script src="/app.js"></script>
+</body>
+</html>
