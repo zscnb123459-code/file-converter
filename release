@@ -1,0 +1,2 @@
+JAVA_VERSION="26.0.2.1"
+MODULES="java.base java.datatransfer java.xml java.prefs java.desktop java.logging java.security.sasl java.naming java.security.jgss java.transaction.xa java.sql java.xml.crypto jdk.crypto.ec jdk.httpserver"
